@@ -1,0 +1,163 @@
+{% extends "base.html" %}
+{% block title %}Haftalık Takvim{% endblock %}
+{% block content %}
+<div class="container">
+    <h2 class="section-title animate__animated animate__fadeInDown">Haftalık Rezervasyon Takvimi</h2>
+    <div class="row g-4">
+        {% for day in days %}
+        <div class="col-md-12 mb-4">
+            <div class="animated-card animate__animated animate__fadeInUp">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span class="fw-bold fs-5" style="color:#1e40af">
+                        {{ day.strftime('%A')|replace('Monday','Pazartesi')|replace('Tuesday','Salı')|replace('Wednesday','Çarşamba')|replace('Thursday','Perşembe')|replace('Friday','Cuma')|replace('Saturday','Cumartesi')|replace('Sunday','Pazar') }}
+                        &nbsp;({{ day.strftime('%d/%m/%Y') }})
+                    </span>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-calendar mb-0 animate__animated animate__fadeIn">
+                        <thead>
+                            <tr>
+                                <th>Saat</th>
+                                {% for fac in faculties %}
+                                    <th>{{ fac.name }}</th>
+                                {% endfor %}
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {% for time in times %}
+                            <tr>
+                                <td><b>{{ time }}</b></td>
+                                {% for fac in faculties %}
+                                    {% set slot = slot_map.get((day|string, time, fac.id)) %}
+                                    {% set slot_past = (day < now.date()) or (day == now.date() and time < now.strftime('%H:%M')) %}
+                                    {% if slot and slot.user_id %}
+                                        {% if slot.user_id == session['user_id'] %}
+                                            <td>
+                                                <span class="calendar-slot mine animate__animated animate__pulse" id="slot-{{day}}-{{time}}-{{fac.id}}">Rezervasyon Alındı</span>
+                                            </td>
+                                        {% else %}
+                                            <td>
+                                                <span class="calendar-slot reserved animate__animated animate__pulse">Dolu</span>
+                                            </td>
+                                        {% endif %}
+                                    {% elif slot_past %}
+                                        <td>
+                                            <span class="calendar-slot past">Geçti</span>
+                                        </td>
+                                    {% else %}
+                                        <td>
+                                            <button class="calendar-slot empty animate__animated animate__fadeIn"
+                                                    onclick="openResModal('{{day}}','{{time}}','{{fac.id}}','{{fac.name}}')"
+                                                    id="slot-{{day}}-{{time}}-{{fac.id}}">
+                                                Rezerve Et
+                                            </button>
+                                        </td>
+                                    {% endif %}
+                                {% endfor %}
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+<!-- Modal -->
+<div class="modal fade" id="resModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <form id="resForm" class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Rezervasyon Yap</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" name="date" id="modal-date">
+        <input type="hidden" name="time" id="modal-time">
+        <input type="hidden" name="faculty_id" id="modal-faculty-id">
+        <div class="mb-2">
+            <b>Tarih:</b> <span id="modal-date-show"></span><br>
+            <b>Saat:</b> <span id="modal-time-show"></span><br>
+            <b>Fakülte:</b> <span id="modal-faculty-show"></span>
+        </div>
+        <div class="mb-2">
+            <label class="form-label">Ders</label>
+            <select class="form-select" name="course" id="modal-course" required>
+                <option value="">Ders seçiniz...</option>
+            </select>
+        </div>
+        <div class="mb-2">
+            <label class="form-label">Başlık</label>
+            <input type="text" class="form-control" name="title" required maxlength="100" placeholder="Ör: Final Sınavı">
+        </div>
+        <div class="mb-2">
+            <label class="form-label">Açıklama</label>
+            <textarea class="form-control" name="description" rows="2" maxlength="250" placeholder="Ek açıklama (isteğe bağlı)"></textarea>
+        </div>
+        <div id="modal-error" class="alert d-none mt-2"></div>
+      </div>
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-main">Onayla</button>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script>
+let currentBtn = null;
+function openResModal(date,time,fac_id,fac_name) {
+    document.getElementById('modal-date').value = date;
+    document.getElementById('modal-time').value = time;
+    document.getElementById('modal-faculty-id').value = fac_id;
+    document.getElementById('modal-date-show').innerText = date;
+    document.getElementById('modal-time-show').innerText = time;
+    document.getElementById('modal-faculty-show').innerText = fac_name;
+    document.getElementById('resForm').reset();
+    document.getElementById('modal-error').classList.add('d-none');
+    // Dersleri dinamik çek
+    fetch(`/get_courses?faculty_id=${fac_id}`)
+    .then(r=>r.json()).then(data => {
+        let c = document.getElementById('modal-course');
+        c.innerHTML = '<option value="">Ders seçiniz...</option>';
+        data.forEach(d => c.innerHTML += `<option value="${d.id}">${d.name}</option>`);
+    });
+    // Buton id'yi akılda tut
+    currentBtn = `slot-${date}-${time}-${fac_id}`;
+    var modal = new bootstrap.Modal(document.getElementById('resModal'));
+    modal.show();
+}
+document.getElementById('resForm').addEventListener('submit', function(e){
+    e.preventDefault();
+    if(document.getElementById('modal-course').value=="") {
+        var err = document.getElementById('modal-error');
+        err.innerText = "Lütfen dersi seçiniz!";
+        err.className = "alert alert-danger mt-2";
+        err.classList.remove('d-none');
+        return;
+    }
+    var form = this;
+    var data = new FormData(form);
+    fetch("/make_reservation", {
+        method: "POST",
+        body: data
+    }).then(r => r.json()).then(j => {
+        if(j.success){
+            var modal = bootstrap.Modal.getInstance(document.getElementById('resModal'));
+            modal.hide();
+            // Butonu anında değiştir
+            let btn = document.getElementById(currentBtn);
+            if(btn) {
+                btn.outerHTML = `<span class="calendar-slot mine animate__animated animate__flash">Rezervasyon Alındı</span>`;
+            }
+        } else {
+            var err = document.getElementById('modal-error');
+            err.innerText = j.message;
+            err.className = "alert alert-danger mt-2";
+            err.classList.remove('d-none');
+        }
+    });
+});
+</script>
+{% endblock %}

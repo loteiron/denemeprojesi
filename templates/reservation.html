@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+{% block title %}Rezervasyon Yap{% endblock %}
+{% block content %}
+<div class="animated-card animate__animated animate__fadeInDown">
+    <h2>Rezervasyon Yap</h2>
+    <form method="post" autocomplete="off">
+        <div class="row">
+            <div class="mb-2 col-md-6">
+                <label class="form-label">Ad Soyad</label>
+                <input type="text" class="form-control" value="{{ user.name }}" readonly>
+            </div>
+            <div class="mb-2 col-md-6">
+                <label class="form-label">Okul E-Postası</label>
+                <input type="email" class="form-control" value="{{ user.email }}" readonly>
+            </div>
+            <div class="mb-2 col-md-6">
+                <label class="form-label">Öğrenci No</label>
+                <input type="text" class="form-control" value="{{ user.student_number }}" readonly>
+            </div>
+            <div class="mb-2 col-md-6">
+                <label class="form-label">Fakülte</label>
+                <select name="faculty_id" id="faculty_id" class="form-select" required>
+                    <option value="">Fakülte Seçiniz</option>
+                    {% for fac in faculties %}
+                        <option value="{{ fac.id }}" {% if user.faculty_id == fac.id %}selected{% endif %}>{{ fac.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="mb-2 col-md-6">
+                <label class="form-label">Tarih</label>
+                <input type="date" name="date" id="date" class="form-control" required>
+            </div>
+            <div class="mb-2 col-md-6">
+                <label class="form-label">Dakika Seç (09:30-16:30)</label>
+                <input type="hidden" name="time" id="time" required>
+                <div id="slots" class="mt-1"></div>
+            </div>
+            <div class="mb-2 col-md-6">
+                <label class="form-label">Başlık</label>
+                <input type="text" name="title" class="form-control" required maxlength="100" placeholder="Ör: Final Sınavı">
+            </div>
+            <div class="mb-2 col-md-6">
+                <label class="form-label">Açıklama</label>
+                <textarea name="description" class="form-control" rows="1" maxlength="300" placeholder="Ek açıklama (isteğe bağlı)"></textarea>
+            </div>
+        </div>
+        <button type="submit" class="btn-main w-100 animate__animated animate__pulse animate__infinite animate__slower">Rezervasyon Yap</button>
+    </form>
+</div>
+<script>
+let selectedSlot = null;
+function loadSlots() {
+    let date = document.getElementById('date').value;
+    let faculty_id = document.getElementById('faculty_id').value;
+    let slotsDiv = document.getElementById('slots');
+    slotsDiv.innerHTML = '<span class="text-secondary">Yükleniyor...</span>';
+    if (date && faculty_id) {
+        fetch(`/slots?date=${date}&faculty_id=${faculty_id}`)
+        .then(res => res.json())
+        .then(data => {
+            let html = '<table class="slots-table"><tr>';
+            data.forEach((slot, i) => {
+                if (i > 0 && i % 6 === 0) html += '</tr><tr>';
+                if (slot.status === "full") {
+                    html += `<td><button class="slot-btn slot-full animate__animated animate__fadeIn" disabled>${slot.time}</button></td>`;
+                } else {
+                    html += `<td><button type="button" class="slot-btn slot-empty animate__animated animate__fadeIn" onclick="selectSlot('${slot.time}', this)">${slot.time}</button></td>`;
+                }
+            });
+            html += '</tr></table>';
+            slotsDiv.innerHTML = html;
+        });
+    } else {
+        slotsDiv.innerHTML = '<span class="text-secondary">Tarih ve fakülte seçiniz.</span>';
+    }
+}
+function selectSlot(time, btn) {
+    selectedSlot = time;
+    document.getElementById('time').value = time;
+    document.querySelectorAll('.slot-btn').forEach(b => b.classList.remove('selected-slot','animate__pulse','animate__infinite'));
+    btn.classList.add('selected-slot','animate__pulse','animate__infinite');
+}
+window.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('date').addEventListener('change', loadSlots);
+    document.getElementById('faculty_id').addEventListener('change', loadSlots);
+});
+</script>
+{% endblock %}

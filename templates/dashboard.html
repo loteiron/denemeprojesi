@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Ana Sayfa{% endblock %}
+{% block content %}
+<div class="container animated-card">
+    <h2 class="section-title">Hoş geldin, {{ session['user_name'] }}!</h2>
+    <h5>Soon gerçekleşecek rezervasyonların:</h5>
+    <ul>
+        {% for r in upcoming %}
+            <li>
+                <b>{{ r.date.strftime('%d.%m.%Y') }} {{ r.time }}</b> /
+                {{ r.course }} - {{ r.faculty }} /
+                <span class="badge bg-primary">{{ r.title }}</span>
+            </li>
+        {% else %}
+            <li>Henüz rezervasyonun yok.</li>
+        {% endfor %}
+    </ul>
+    <hr>
+    <h5>Bildirimler:</h5>
+    <ul>
+        {% for n in notifications %}
+            <li><b>{{ n.title }}</b>: {{ n.message }}</li>
+        {% else %}
+            <li>Bildirim yok.</li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}

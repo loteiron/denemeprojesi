@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}Ana Sayfa{% endblock %}
+{% block content %}
+<div class="animated-card animate__animated animate__fadeInDown">
+    <h2>Hoşgeldiniz!</h2>
+    <p class="lead mb-3">Bu sistem üzerinden sınav günü için dakikası dakikasına randevu alabilir, kendi rezervasyonlarını görebilir ve yönetebilirsin.</p>
+    <div class="d-flex justify-content-center gap-3 mt-4">
+        <a href="{{ url_for('login') }}" class="btn-main animate__animated animate__pulse animate__infinite">Giriş Yap</a>
+        <a href="{{ url_for('register') }}" class="btn-main animate__animated animate__pulse animate__infinite animate__delay-1s">Kayıt Ol</a>
+    </div>
+</div>
+{% endblock %}

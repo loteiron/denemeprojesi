@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title %}Rezervasyonlarım{% endblock %}
+{% block content %}
+<div class="animated-card animate__animated animate__fadeInDown">
+    <h2>Rezervasyonlarım</h2>
+    {% if reservations %}
+    <div class="table-responsive">
+    <table class="table table-hover align-middle">
+        <thead>
+            <tr>
+                <th>Tarih</th>
+                <th>Saat</th>
+                <th>Fakülte</th>
+                <th>Başlık</th>
+                <th>Açıklama</th>
+                <th>İşlem</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for r in reservations %}
+        <tr>
+            <td>{{ r.date }}</td>
+            <td>{{ r.time }}</td>
+            <td>{{ r.faculty_name }}</td>
+            <td>{{ r.title }}</td>
+            <td>{{ r.description }}</td>
+            <td>
+                <a href="{{ url_for('cancel_reservation', res_id=r.id) }}" class="btn btn-outline-danger btn-sm"
+                   onclick="return confirm('İptal etmek istediğine emin misin?');">İptal Et</a>
+            </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    </div>
+    {% else %}
+    <p class="mt-4 text-center text-secondary">Henüz bir rezervasyonunuz yok.</p>
+    {% endif %}
+</div>
+{% endblock %}

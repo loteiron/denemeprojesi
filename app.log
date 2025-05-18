@@ -1,0 +1,20 @@
+2025-05-18 03:30:40,360 INFO:[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2025-05-18 03:30:40,361 INFO:[33mPress CTRL+C to quit[0m
+2025-05-18 03:30:40,362 INFO: * Restarting with stat
+2025-05-18 03:30:40,703 WARNING: * Debugger is active!
+2025-05-18 03:30:40,705 INFO: * Debugger PIN: 142-430-138
+2025-05-18 03:30:42,281 INFO:127.0.0.1 - - [18/May/2025 03:30:42] "GET /calendar HTTP/1.1" 200 -
+2025-05-18 03:30:42,348 INFO:127.0.0.1 - - [18/May/2025 03:30:42] "GET /static/css/style.css HTTP/1.1" 200 -
+2025-05-18 03:30:48,808 INFO:127.0.0.1 - - [18/May/2025 03:30:48] "GET /get_courses?faculty_id=1 HTTP/1.1" 200 -
+2025-05-18 03:30:57,167 INFO:127.0.0.1 - - [18/May/2025 03:30:57] "POST /make_reservation HTTP/1.1" 200 -
+2025-05-18 03:31:28,935 INFO:127.0.0.1 - - [18/May/2025 03:31:28] "GET /get_courses?faculty_id=1 HTTP/1.1" 200 -
+2025-05-18 03:31:31,874 INFO:127.0.0.1 - - [18/May/2025 03:31:31] "GET /profile HTTP/1.1" 200 -
+2025-05-18 03:31:32,170 INFO:127.0.0.1 - - [18/May/2025 03:31:32] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2025-05-18 03:31:35,108 INFO:127.0.0.1 - - [18/May/2025 03:31:35] "[32mGET /logout HTTP/1.1[0m" 302 -
+2025-05-18 03:31:35,233 INFO:127.0.0.1 - - [18/May/2025 03:31:35] "GET /login HTTP/1.1" 200 -
+2025-05-18 03:31:35,378 INFO:127.0.0.1 - - [18/May/2025 03:31:35] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2025-05-18 03:31:41,454 INFO:127.0.0.1 - - [18/May/2025 03:31:41] "POST /login HTTP/1.1" 200 -
+2025-05-18 03:31:41,750 INFO:127.0.0.1 - - [18/May/2025 03:31:41] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2025-05-18 03:31:47,975 INFO:127.0.0.1 - - [18/May/2025 03:31:47] "GET /register HTTP/1.1" 200 -
+2025-05-18 03:31:48,046 INFO:127.0.0.1 - - [18/May/2025 03:31:48] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -

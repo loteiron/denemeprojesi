@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}Rezervasyonlar{% endblock %}
+{% block content %}
+<div class="animated-card">
+    <h2 class="section-title">Tüm Rezervasyonlar</h2>
+    <table class="table table-sm">
+        <thead>
+            <tr>
+                <th>Kullanıcı</th>
+                <th>Fakülte</th>
+                <th>Ders</th>
+                <th>Tarih</th>
+                <th>Saat</th>
+                <th>Başlık</th>
+                <th>Oluşturma</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for r in reservations %}
+            <tr>
+                <td>{{ r.user }}</td>
+                <td>{{ r.faculty }}</td>
+                <td>{{ r.course }}</td>
+                <td>{{ r.date.strftime('%d.%m.%Y') }}</td>
+                <td>{{ r.time }}</td>
+                <td>{{ r.title }}</td>
+                <td>{{ r.created_at.strftime('%d.%m.%Y %H:%M') }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

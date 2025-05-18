@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Sınav Rezervasyon Sistemi{% endblock %}</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    {% block head %}{% endblock %}
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark shadow-sm mb-4">
+    <div class="container">
+        <a class="navbar-brand fw-bold" href="{{ url_for('dashboard') }}">Sınav Rezervasyon</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"><span class="navbar-toggler-icon"></span></button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                {% if session.get('user_id') %}
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="accountDropdown" role="button" data-bs-toggle="dropdown">
+                        Hesabım
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="accountDropdown">
+                        <li><a class="dropdown-item" href="{{ url_for('profile') }}">Bilgilerim</a></li>
+                        <li><a class="dropdown-item" href="{{ url_for('password_update') }}">Şifre Güncelle</a></li>
+                        <li><a class="dropdown-item" href="{{ url_for('notification_settings') }}">Bildirim Seçenekleri</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="calendarDropdown" role="button" data-bs-toggle="dropdown">
+                        Takvim
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="calendarDropdown">
+                        <li><a class="dropdown-item" href="{{ url_for('calendar') }}">Haftalık Rezervasyonlar</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('logout') }}">Çıkış</a>
+                </li>
+                {% else %}
+                <li class="nav-item"><a class="nav-link" href="{{ url_for('login') }}">Giriş</a></li>
+                <li class="nav-item"><a class="nav-link" href="{{ url_for('register') }}">Kayıt Ol</a></li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+</nav>
+<main>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    <div class="container">
+        {% for category, message in messages %}
+            <div class="alert alert-{{ category }} flash animate__animated animate__fadeInDown text-center" role="alert">
+                {{ message }}
+            </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    {% endwith %}
+    {% block content %}{% endblock %}
+</main>
+<footer class="text-center mt-5 mb-2" style="color:#1e40af;opacity:.68;font-size:0.95em">
+    &copy; {{ now.year }} Sınav Rezervasyon Sistemi
+</footer>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+{% block scripts %}{% endblock %}
+</body>
+</html>

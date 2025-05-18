@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Bilgilerim{% endblock %}
+{% block content %}
+<div class="container">
+    <div class="animated-card animate__animated animate__fadeInDown">
+        <h2>Bilgilerim</h2>
+        <form method="post">
+            <div class="mb-2">
+                <label>Ad Soyad</label>
+                <input type="text" class="form-control" name="name" value="{{ user.name }}" required>
+            </div>
+            <div class="mb-2">
+                <label>E-Posta</label>
+                <input type="email" class="form-control" name="email" value="{{ user.email }}" required>
+            </div>
+            <div class="mb-2">
+                <label>Öğrenci No</label>
+                <input type="text" class="form-control" name="student_number" value="{{ user.student_number }}" required>
+            </div>
+            <div class="mb-2">
+                <label>Fakülte</label>
+                <input type="text" class="form-control" value="{{ user.faculty_name }}" readonly>
+            </div>
+            <button class="btn btn-main">Güncelle</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

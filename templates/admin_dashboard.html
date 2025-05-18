@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}Admin Paneli{% endblock %}
+{% block content %}
+<div class="animated-card">
+    <h2 class="section-title">Yönetici Paneli</h2>
+    <ul>
+        <li><a href="{{ url_for('admin_users') }}">Kullanıcılar ({{ user_count }})</a></li>
+        <li><a href="{{ url_for('admin_reservations') }}">Rezervasyonlar ({{ reservation_count }})</a></li>
+        <li><a href="{{ url_for('admin_notifications') }}">Bildirimler ({{ notification_count }})</a></li>
+    </ul>
+</div>
+{% endblock %}
